@@ -2,9 +2,11 @@
 
 const randomLuckyNum = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
 const start = 1;
-const end = 5;
+const end = 100;
 const randomNum = randomLuckyNum(start, end);
 let attempts = 10;
+let us1;
+
 
 function gameIsBot(randomNum) {
     while (true) {
@@ -14,16 +16,21 @@ function gameIsBot(randomNum) {
             break;
         }
         if (attempts === 1) {
-            alert('Попытки закончились, хотите сыграть еще?');
+            us1 = confirm('Попытки закончились, хотите сыграть еще?');
             attempts = 10;
             gameIsBot(randomNum);
+            break;
         }
         attempts--;
+        if (us1 === false) {
+            alert('Игра окончена, пока!');
+            return false;
+        }
         const userNum = +randomUserNum;
 
-        if (isNaN(userNum) || !isFinite(userNum) || userNum === '') {
-            alert('Введи число!');
+        if (isNaN(userNum) || !isFinite(userNum)) {
             attempts++;
+            alert('Введи число!');
             continue;
         }
 
@@ -34,10 +41,11 @@ function gameIsBot(randomNum) {
             alert('Загаданное число меньше! Осталось попыток: ' + attempts);
             continue;
         } else if (userNum === randomNum) {
-            alert('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?');
+            confirm('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?');
             attempts = 10;
             gameIsBot(randomNum);
         }
     }
 }
 gameIsBot(randomNum);
+console.log(randomNum);
