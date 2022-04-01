@@ -1,51 +1,48 @@
 'use strict';
 
-const randomLuckyNum = (min, max) => Math.floor(min + Math.random() * (max + 1 - min));
-const start = 1;
-const end = 100;
-const randomNum = randomLuckyNum(start, end);
-let attempts = 10;
-let us1;
+function randomInteger(min, max) {
+    return Math.round(min - 0.5 + Math.random() * (max - min + 1));
+}
 
+const minNumber = 1,
+    maxNumber = 5;
 
-function gameIsBot(randomNum) {
-    while (true) {
-        let randomUserNum = prompt('Угадай число от 1 до 100! У вас попыток ' + attempts);
-        if (randomUserNum === null) {
-            alert('Игра окончена!');
-            break;
-        }
-        if (attempts === 1) {
-            us1 = confirm('Попытки закончились, хотите сыграть еще?');
+const guessNumber = (attempts = 10, randomNum = randomInteger(minNumber, maxNumber)) => {
+
+    if (attempts === 0) {
+        alert('Попытки закончились');
+        if (confirm('Хотите сыграть еще?')) {
             attempts = 10;
-            gameIsBot(randomNum);
-            break;
-        }
-        attempts--;
-        if (us1 === false) {
-            alert('Игра окончена, пока!');
-            return false;
-        }
-        const userNum = +randomUserNum;
-
-        if (isNaN(userNum) || !isFinite(userNum)) {
-            attempts++;
-            alert('Введи число!');
-            continue;
-        }
-
-        if (userNum < randomNum) {
-            alert('Загаданное число больше! Осталось попыток: ' + attempts);
-            continue;
-        } else if (userNum > randomNum) {
-            alert('Загаданное число меньше! Осталось попыток: ' + attempts);
-            continue;
-        } else if (userNum === randomNum) {
-            confirm('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?');
-            attempts = 10;
-            gameIsBot(randomNum);
+            guessNumber(randomNum);
+        } else {
+            alert('Игра окончена, пока');
+            return;
         }
     }
-}
-gameIsBot(randomNum);
-console.log(randomNum);
+
+    const userNum = Number(prompt(`Введите число от ${minNumber} до ${maxNumber}. У Вас ${attempts} попыток`));
+    if (userNum === null || userNum === 0) {
+        alert('Игра окончена!');
+        return;
+    }
+
+    if (isNaN(userNum) || !isFinite(userNum) || userNum < 0 || userNum > maxNumber || userNum < minNumber || userNum === '' || userNum === ' ') {
+        alert(`Введи число от ${minNumber} до ${maxNumber}`);
+        return guessNumber(attempts, randomNum);
+    }
+
+    if (userNum === randomNum) {
+        alert('Поздравляю, Вы угадали!!! Хотели бы сыграть еще?');
+        if (confirm('Начать новую игру?')) {
+            return guessNumber();
+        } else {
+            alert('Игра окончена, пока!');
+            return;
+        }
+    } else {
+        alert(`Загаданное число ${(userNum < randomNum ? 'меньше' : 'больше')}! Осталось попыток: ${attempts -1}`);
+        return guessNumber(--attempts, randomNum);
+    }
+};
+
+guessNumber();
